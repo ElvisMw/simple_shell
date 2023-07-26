@@ -5,7 +5,7 @@
  * Description: Prints "This is a beautiful day."
  * Return: Always 0 (Success)
  */
-int main()
+int main(void)
 {
 	printf("This is a beautiful day.\n");
 	return (0);
