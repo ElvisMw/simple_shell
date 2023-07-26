@@ -7,6 +7,6 @@
  */
 int main(void)
 {
-	printf("This is a beautiful day.\n");
+	printf("Thiss is a beautiful day.\n");
 	return (0);
 }
