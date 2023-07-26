@@ -1,17 +1,14 @@
 #include "main.h"
 
 /**
- * e_j_alias - Builtin command that either prints all aliases, specific
- * aliases, or sets an alias.
- * @args: An array of arguments.
- * @front: A double pointer to the beginning of args.
+ * e_j_alias - Command for printing aliases, individual
+ * aliases, or group alias.
+ * @args: Represents array arguments
+ * @front: Represents double pointer for @args' begining.
  *
- * Return: If an error occurs - -1. Otherwise - 0.
+ * Return: When unsuccessful, return -1.
+ * Return 0 upon success.
  */
-int e_j_alias(char **args, char __attribute__((__unused__)) **front);
-void set_alias(char *var_name, char *value);
-void print_alias(alias_t *alias);
-
 int e_j_alias(char **args, char __attribute__((__unused__)) **front)
 {
 	alias_t *temp = aliases;
@@ -50,11 +47,15 @@ int e_j_alias(char **args, char __attribute__((__unused__)) **front)
 	}
 	return (ret);
 }
-
+/**
+ * set_alias - Sets a new alias or updates an existing alias.
+ * @var_name: The name of the alias to set.
+ * @value: The value to assign to the alias.
+ */
 void set_alias(char *var_name, char *value)
 {
 	alias_t *temp = aliases;
-	int len, j, k;
+	int len, z, k;
 	char *new_value;
 
 	*value = '\0';
@@ -63,10 +64,10 @@ void set_alias(char *var_name, char *value)
 	new_value = malloc(sizeof(char) * (len + 1));
 	if (!new_value)
 		return;
-	for (j = 0, k = 0; value[j]; j++)
+	for (z = 0, k = 0; value[z]; z++)
 	{
-		if (value[j] != '\'' && value[j] != '"')
-			new_value[k++] = value[j];
+		if (value[z] != '\'' && value[z] != '"')
+			new_value[k++] = value[z];
 	}
 	new_value[k] = '\0';
 	while (temp)
@@ -83,6 +84,10 @@ void set_alias(char *var_name, char *value)
 		add_alias_end(&aliases, var_name, new_value);
 }
 
+/**
+ * print_alias - Prints the name and value of an alias.
+ * @alias: Pointer to the alias structure to print.
+ */
 void print_alias(alias_t *alias)
 {
 	char *alias_string;
@@ -100,6 +105,12 @@ void print_alias(alias_t *alias)
 	free(alias_string);
 }
 
+/**
+ * replace_aliases - Replaces arguments that are aliases with their values.
+ * @args: An array of arguments to check for aliases.
+ *
+ * Return: The updated array of arguments with aliases replaced by their values
+ */
 char **replace_aliases(char **args)
 {
 	alias_t *temp;

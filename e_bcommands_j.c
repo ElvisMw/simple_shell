@@ -60,23 +60,23 @@ int e_j_exit(char **args, char **front)
 		}
 		for (; args[0][i]; i++)
 		{
-            if (i <= len_of_int && args[0][i] >= '0' && args[0][i] <= '9')
-                num = (num * 10) + (args[0][i] - '0');
-            else
-                return (create_error(--args, 2));
-        }
-    }
-    else
-    {
-        return (-3);
-    }
-    if (num > max - 1)
-        return (create_error(--args, 2));
-    args -= 1;
-    free_args(args, front);
-    free_env();
-    free_alias_list(aliases);
-    exit(num);
+			if (i <= len_of_int && args[0][i] >= '0' && args[0][i] <= '9')
+				num = (num * 10) + (args[0][i] - '0');
+			else
+				return (create_error(--args, 2));
+		}
+	}
+	else
+	{
+		return (-3);
+	}
+	if (num > max - 1)
+		return (create_error(--args, 2));
+	args -= 1;
+	free_args(args, front);
+	free_env();
+	free_alias_list(aliases);
+	exit(num);
 }
 
 /**
@@ -85,31 +85,31 @@ int e_j_exit(char **args, char **front)
  * @front: A double pointer to the beginning of args.
  *
  * Return: If the given string is not a directory - 2.
- *         If an error occurs - -1.
- *         Otherwise - 0.
+ * If an error occurs - -1.
+ * Otherwise - 0.
  */
 int e_j_cd(char **args, char __attribute__((__unused__)) **front)
 {
-    char **dir_info, *new_line = "\n";
-    char *oldpwd = NULL, *pwd = NULL;
-    struct stat dir;
-
-    oldpwd = getcwd(oldpwd, 0);
-    if (!oldpwd)
-        return (-1);
-
-    if (args[0])
+	char **dir_info, *new_line = "\n";
+	char *oldpwd = NULL, *pwd = NULL;
+	struct stat dir;
+	
+	oldpwd = getcwd(oldpwd, 0);
+	if (!oldpwd)
+		return (-1);
+	
+	if (args[0])
+	{
+		if (*(args[0]) == '-' || _strcmp(args[0], "--") == 0)
+		{
+			if ((args[0][1] == '-' && args[0][2] == '\0') ||
+					args[0][1] == '\0')
+			{
+				if (_getenv("OLDPWD") != NULL)
+					(chdir(*_getenv("OLDPWD") + 7));
+			}
+			else
     {
-        if (*(args[0]) == '-' || _strcmp(args[0], "--") == 0)
-        {
-            if ((args[0][1] == '-' && args[0][2] == '\0') ||
-                args[0][1] == '\0')
-            {
-                if (_getenv("OLDPWD") != NULL)
-                    (chdir(*_getenv("OLDPWD") + 7));
-            }
-            else
-            {
                 free(oldpwd);
                 return (create_error(args, 2));
             }
