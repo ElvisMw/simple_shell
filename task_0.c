@@ -1,5 +1,4 @@
 #include <stdio.h>
-
 /**
  * main - This is the program's entry point
  *
@@ -11,4 +10,3 @@ int main(void)
 	printf("This is a beautiful day.\n");
 	return (0);
 }
-
