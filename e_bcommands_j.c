@@ -14,24 +14,24 @@ int e_j_help(char **args, char __attribute__((__unused__)) **front);
  */
 int (*get_builtin(char *command))(char **args, char **front)
 {
-    builtin_t funcs[] = {
-        { "exit", e_j_exit },
-        { "env", e_j_env },
-        { "setenv", e_j_setenv },
-        { "unsetenv", e_j_unsetenv },
-        { "cd", e_j_cd },
-        { "alias", e_j_alias },
-        { "help", e_j_help },
-        { NULL, NULL }
-    };
-    int i;
-
-    for (i = 0; funcs[i].name; i++)
-    {
-        if (_strcmp(funcs[i].name, command) == 0)
-            break;
-    }
-    return (funcs[i].f);
+	builtin_t funcs[] = {
+		{ "exit", e_j_exit },
+		{ "env", e_j_env },
+		{ "setenv", e_j_setenv },
+		{ "unsetenv", e_j_unsetenv },
+		{ "cd", e_j_cd },
+		{ "alias", e_j_alias },
+		{ "help", e_j_help },
+		{ NULL, NULL }
+	};
+	int i;
+	
+	for (i = 0; funcs[i].name; i++)
+	{
+		if (_strcmp(funcs[i].name, command) == 0)
+			break;
+	}
+	return (funcs[i].f);
 }
 
 /**
@@ -48,18 +48,18 @@ int (*get_builtin(char *command))(char **args, char **front)
  */
 int e_j_exit(char **args, char **front)
 {
-    int i, len_of_int = 10;
-    unsigned int num = 0, max = 1 << (sizeof(int) * 8 - 1);
-
-    if (args[0])
-    {
-        if (args[0][0] == '+')
-        {
-            i = 1;
-            len_of_int++;
-        }
-        for (; args[0][i]; i++)
-        {
+	int i, len_of_int = 10;
+	unsigned int num = 0, max = 1 << (sizeof(int) * 8 - 1);
+	
+	if (args[0])
+	{
+		if (args[0][0] == '+')
+		{
+			i = 1;
+			len_of_int++;
+		}
+		for (; args[0][i]; i++)
+		{
             if (i <= len_of_int && args[0][i] >= '0' && args[0][i] <= '9')
                 num = (num * 10) + (args[0][i] - '0');
             else
