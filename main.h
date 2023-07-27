@@ -39,6 +39,8 @@ typedef struct alias_s
 
 alias_t *e_j;
 
+extern alias_t *aliases;
+
 ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 char **_strtok(char *line, char *delim);
