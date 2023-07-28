@@ -1,5 +1,5 @@
 #include "main.h"
-
+alias_t *aliases = NULL;
 /**
  * sig_handler - Handles the SIGINT signal (Ctrl+C) for the shell.
  * @sig: The signal number.
@@ -141,4 +141,3 @@ int main(int argc, char *argv[])
 	free_alias_list(aliases);
 	return (*exe_ret);
 }
-

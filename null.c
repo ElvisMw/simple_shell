@@ -1,5 +1,6 @@
 #include "main.h"
 
+
 /**
  * cant_open - Prints an error message when a file cannot be opened.
  *

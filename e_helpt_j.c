@@ -15,7 +15,7 @@ void help_env(void)
  */
 void help_setenv(void)
 {
-	char *msg = "setenv: setenv [VARIABLE] [VALUE]\n\tInitialization of new variable";
+	char *msg = "setenv: setenv [VARIABLE] [VALUE]\n\tInitializes new variable";
 
 	write(STDOUT_FILENO, msg, _strlen(msg));
 	msg = "environment variable, modifies existing variable.\n\n";

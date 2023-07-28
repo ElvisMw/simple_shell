@@ -9,6 +9,37 @@
  * Return: When unsuccessful, return -1.
  * Return 0 upon success.
  */
+int e_j_alias(char **args, char __attribute__((__unused__)) **front);
+
+/**
+ * set_alias - Sets a new alias or updates an existing alias.
+ * @var_name: The name of the alias to set.
+ * @value: The value to assign to the alias.
+ */
+void set_alias(char *var_name, char *value);
+
+/**
+ * print_alias - Prints the name and value of an alias.
+ * @alias: Pointer to the alias structure to print.
+ */
+void print_alias(alias_t *alias);
+
+/**
+ * replace_aliases - Replaces arguments that are aliases with their values.
+ * @args: An array of arguments to check for aliases.
+ *
+ * Return: The updated array of arguments with aliases replaced by their values.
+ */
+char **replace_aliases(char **args);
+/**
+ * e_j_alias - Command for printing aliases, individual
+ * aliases, or group alias.
+ * @args: Represents array arguments
+ * @front: Represents double pointer for @args' begining.
+ *
+ * Return: When unsuccessful, return -1.
+ * Return 0 upon success.
+ */
 int e_j_alias(char **args, char __attribute__((__unused__)) **front)
 {
 	alias_t *temp = aliases;
@@ -83,7 +114,6 @@ void set_alias(char *var_name, char *value)
 	if (!temp)
 		add_alias_end(&aliases, var_name, new_value);
 }
-
 /**
  * print_alias - Prints the name and value of an alias.
  * @alias: Pointer to the alias structure to print.
@@ -104,12 +134,11 @@ void print_alias(alias_t *alias)
 	write(STDOUT_FILENO, alias_string, len);
 	free(alias_string);
 }
-
 /**
  * replace_aliases - Replaces arguments that are aliases with their values.
  * @args: An array of arguments to check for aliases.
  *
- * Return: The updated array of arguments with aliases replaced by their values
+ * Return: The updated array of arguments with aliases replaced by their values.
  */
 char **replace_aliases(char **args)
 {

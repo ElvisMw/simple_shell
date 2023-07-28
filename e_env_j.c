@@ -1,120 +1,70 @@
 #include "main.h"
 
 /**
- * e_j_env - Prints every environment variable
- * @args: Represents array of arguments
- * @front: Represents double pointer @args beginning
+ * _copyenv - Copies the environment variables into a new array.
  *
- * Return: Return 0 when successful, -1 fail
+ * Return: A pointer to the new array containing the environment variables, or
+ * NULL if memory allocation fails.
  */
-int e_j_env(char **args, char __attribute__((__unused__)) **front)
+char **_copyenv(void)
 {
-	int index;
-	char nc = '\n';
-
-	if (!environ)
-		return (-1);
-
-	for (index = 0; environ[index]; index++)
-	{
-		write(STDOUT_FILENO, environ[index], _strlen(environ[index]));
-		write(STDOUT_FILENO, &nc, 1);
-	}
-
-	(void)args;
-	return (0);
-}
-
-/**
- * e_j_setenv - Setting new environment variable
- * @args: Represents array of arguments
- * @front: Represents double pointer to @args beginning
- *
- * Return: Return 0 when successful, -1 fail
- */
-int e_j_setenv(char **args, char __attribute__((__unused__)) **front)
-{
-	char **env_var = NULL, **new_environ, *new_value;
+	char **new_environ;
 	size_t size;
 	int index;
-
-	if (!args[0] || !args[1])
-		return (create_error(args, -1));
-
-	new_value = malloc(_strlen(args[0]) + 1 + _strlen(args[1]) + 1);
-	if (!new_value)
-		return (create_error(args, -1));
-	_strcpy(new_value, args[0]);
-	_strcat(new_value, "=");
-	_strcat(new_value, args[1]);
-
-	env_var = _getenv(args[0]);
-	if (env_var)
-	{
-		free(*env_var);
-		*env_var = new_value;
-		return (0);
-	}
-	for (size = 0; environ[size]; size++)
-		;
-
-	new_environ = malloc(sizeof(char *) * (size + 2));
-	if (!new_environ)
-	{
-		free(new_value);
-		return (create_error(args, -1));
-	}
-
-	for (index = 0; environ[index]; index++)
-		new_environ[index] = environ[index];
-
-	free(environ);
-	environ = new_environ;
-	environ[index] = new_value;
-	environ[index + 1] = NULL;
-
-	return (0);
-}
-
-/**
- * e_j_unsetenv - Unsets any particular environment variable
- * @args: Represents array of arguments
- * @front: Represents double pointer to @args beginning
- *
- * Return: Return 0 when successful, -1 fail
- */
-int e_j_unsetenv(char **args, char __attribute__((__unused__)) **front)
-{
-	char **env_var, **new_environ;
-	size_t size;
-	int index, index2;
-
-	if (!args[0])
-		return (create_error(args, -1));
-	env_var = _getenv(args[0]);
-	if (!env_var)
-		return (0);
 
 	for (size = 0; environ[size]; size++)
 		;
 
-	new_environ = malloc(sizeof(char *) * size);
+	new_environ = malloc(sizeof(char *) * (size + 1));
 	if (!new_environ)
-		return (create_error(args, -1));
+		return (NULL);
 
-	for (index = 0, index2 = 0; environ[index]; index++)
+	for (index = 0; environ[index]; index++)
 	{
-		if (*env_var == environ[index])
+		new_environ[index] = malloc(_strlen(environ[index]) + 1);
+
+		if (!new_environ[index])
 		{
-			free(*env_var);
-			continue;
+			for (index--; index >= 0; index--)
+				free(new_environ[index]);
+			free(new_environ);
+			return (NULL);
 		}
-		new_environ[index2] = environ[index];
-		index2++;
+		_strcpy(new_environ[index], environ[index]);
 	}
-	free(environ);
-	environ = new_environ;
-	environ[size - 1] = NULL;
+	new_environ[index] = NULL;
 
-	return (0);
+	return (new_environ);
+}
+
+/**
+ * free_env - Frees the memory allocated for the environment variables.
+ */
+void free_env(void)
+{
+	int index;
+
+	for (index = 0; environ[index]; index++)
+		free(environ[index]);
+	free(environ);
+}
+
+/**
+ * _getenv - Gets the address of the environment variable with the given name.
+ * @var: The name of the environment variable to search for.
+ *
+ * Return: A pointer to the address of the environment variable, or NULL if the
+ * variable is not found.
+ */
+char **_getenv(const char *var)
+{
+	int index, len;
+
+	len = _strlen(var);
+	for (index = 0; environ[index]; index++)
+	{
+		if (_strncmp(var, environ[index], len) == 0)
+			return (&environ[index]);
+	}
+	return (NULL);
 }

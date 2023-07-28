@@ -1,15 +1,16 @@
-#ifndef main_h
-#define main_h
+#ifndef MAIN_H
+#define MAIN_H
 
-#include <fcntl.h>
-#include <signal.h>
 #include <sys/types.h>
+#include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
 #define END_OF_FILE -2
 #define EXIT -3
@@ -36,6 +37,7 @@ typedef struct alias_s
 	char *value;
 	struct alias_s *next;
 } alias_t;
+extern alias_t *aliases;
 
 alias_t *e_j;
 
@@ -60,6 +62,12 @@ int check_args(char **args);
 void free_args(char **args, char **front);
 char **replace_aliases(char **args);
 
+/**/
+int proc_file_commands(char *file_path, int *exe_ret);
+void handle_line(char **line, ssize_t read);
+ssize_t get_new_len(char *line);
+void logical_ops(char *line, ssize_t *new_len);
+
 int _strlen(const char *s);
 char *_strcat(char *dest, const char *src);
 char *_strncat(char *dest, const char *src, size_t n);
@@ -70,13 +78,14 @@ int _strcmp(char *s1, char *s2);
 int _strncmp(const char *s1, const char *s2, size_t n);
 
 int (*get_builtin(char *command))(char **args, char **front);
-int e_j_exit(char **args, char **front);
 int e_j_env(char **args, char __attribute__((__unused__)) **front);
 int e_j_setenv(char **args, char __attribute__((__unused__)) **front);
 int e_j_unsetenv(char **args, char __attribute__((__unused__)) **front);
-int e_j_cd(char **args, char __attribute__((__unused__)) **front);
 int e_j_alias(char **args, char __attribute__((__unused__)) **front);
-int e_j_help(char **args, char __attribute__((__unused__)) **front);
+/* commands.c */
+int e_j_exit(char **args, char **front);
+int e_j_cd(char **args, char **front);
+int e_j_help(char **args, char **front);
 
 char **_copyenv(void);
 void free_env(void);
@@ -106,5 +115,7 @@ void help_setenv(void);
 void help_unsetenv(void);
 void help_history(void);
 
-int proc_file_commands(char *file_path, int *exe_ret);
-#endif
+
+extern alias_t *aliases;
+
+#endif /* MAIN_H */

@@ -1,19 +1,10 @@
-/*
- * this file handles all the builtin commands
- */
-
 #include "main.h"
-int (*get_builtin(char *command))(char **args, char **front);
-int e_j_exit(char **args, char **front);
-int e_j_cd(char **args, char __attribute__((__unused__)) **front);
-int e_j_help(char **args, char __attribute__((__unused__)) **front);
 
 /**
- * get_builtin - Matches a command with a corresponding
- *               e_j builtin function.
- * @command: The command to match.
+ * get_builtin - Get the corresponding built-in function for a command.
+ * @command: The command to find the built-in function for.
  *
- * Return: A function pointer to the corresponding builtin.
+ * Return: Pointer to the corresponding built-in function.
  */
 int (*get_builtin(char *command))(char **args, char **front)
 {
@@ -38,16 +29,11 @@ int (*get_builtin(char *command))(char **args, char **front)
 }
 
 /**
- * e_j_exit - Causes normal process termination
- *                for the e_j shell.
- * @args: An array of arguments containing the exit value.
+ * e_j_exit - Exit the shell with a given status code.
+ * @args: The arguments provided by the user (containing the status code).
  * @front: A double pointer to the beginning of args.
  *
- * Return: If there are no arguments - -3.
- *         If the given exit value is invalid - 2.
- *         O/w - exits with the given status value.
- *
- * Description: Upon returning -3, the program exits back in the main function.
+ * Return: Nothing.
  */
 int e_j_exit(char **args, char **front)
 {
@@ -83,93 +69,179 @@ int e_j_exit(char **args, char **front)
 }
 
 /**
- * e_j_cd - Changes the current directory of the e_j process.
- * @args: An array of arguments.
+ * e_j_cd - Change the current working directory.
+ * @args: The arguments provided by the user (containing the new directory).
  * @front: A double pointer to the beginning of args.
  *
- * Return: If the given string is not a directory - 2.
- *         If an error occurs - -1.
- *         Otherwise - 0.
+ * Return: 0 on success, -1 on error.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include "main.h"
+
+/**
+ * e_j_cd - Change the current working directory.
+ * @args: The arguments provided by the user (containing the new directory).
+ * @front: A double pointer to the beginning of args.
+ *
+ * Return: 0 on success, -1 on error.
  */
 int e_j_cd(char **args, char __attribute__((__unused__)) **front)
 {
-	char **dir_info, *new_line = "\n";
-	char *oldpwd = NULL, *pwd = NULL;
-	struct stat dir;
+	char **dir_info;
+	char *oldpwd = NULL;
+	char *pwd = NULL;
+	int ret = 0;
 
-	oldpwd = getcwd(oldpwd, 0);
-	if (!oldpwd)
-		return (-1);
-
-	if (args[0])
+	oldpwd = getcwd(NULL, 0);
+	if (oldpwd == NULL)
 	{
-		if (*(args[0]) == '-' || _strcmp(args[0], "--") == 0)
+		perror("getcwd");
+		return -1;
+	}
+
+	if (args[0] != NULL)
+	{
+		if (strcmp(args[0], "-") == 0)
 		{
-			if ((args[0][1] == '-' && args[0][2] == '\0') ||
-					args[0][1] == '\0')
+			char *prev_dir = getenv("OLDPWD");
+			if (prev_dir != NULL)
 			{
-				if (_getenv("OLDPWD") != NULL)
-					(chdir(*_getenv("OLDPWD") + 7));
+				ret = chdir(prev_dir);
+				if (ret != 0)
+					perror("chdir");
 			}
 			else
 			{
-				free(oldpwd);
-				return (create_error(args, 2));
+				fprintf(stderr, "OLDPWD not set\n");
+				ret = -1;
+			}
+		}
+		else if (strcmp(args[0], "--") == 0)
+		{
+			char *home_dir = getenv("HOME");
+			if (home_dir != NULL)
+			{
+				ret = chdir(home_dir);
+				if (ret != 0)
+					perror("chdir");
+			}
+			else
+			{
+				fprintf(stderr, "HOME not set\n");
+				ret = -1;
 			}
 		}
 		else
 		{
-			if (stat(args[0], &dir) == 0 && S_ISDIR(dir.st_mode)
-					&& ((dir.st_mode & S_IXUSR) != 0))
-				chdir(args[0]);
-			else
-			{
-				free(oldpwd);
-				return (create_error(args, 2));
-			}
+			ret = chdir(args[0]);
+			if (ret != 0)
+				perror("chdir");
 		}
 	}
 	else
 	{
-		if (_getenv("HOME") != NULL)
-			chdir(*(_getenv("HOME")) + 5);
+		char *home_dir = getenv("HOME");
+		if (home_dir != NULL)
+		{
+			ret = chdir(home_dir);
+			if (ret != 0)
+				perror("chdir");
+		}
+		else
+		{
+			fprintf(stderr, "HOME not set\n");
+			ret = -1;
+		}
 	}
 
-	pwd = getcwd(pwd, 0);
-	if (!pwd)
-		return (-1);
-
-	dir_info = malloc(sizeof(char *) * 2);
-	if (!dir_info)
-		return (-1);
-
-	dir_info[0] = "OLDPWD";
-	dir_info[1] = oldpwd;
-	if (e_j_setenv(dir_info, dir_info) == -1)
-		return (-1);
-
-	dir_info[0] = "PWD";
-	dir_info[1] = pwd;
-	if (e_j_setenv(dir_info, dir_info) == -1)
-		return (-1);
-	if (args[0] && args[0][0] == '-' && args[0][1] != '-')
+	if (ret == 0)
 	{
-		write(STDOUT_FILENO, pwd, _strlen(pwd));
-		write(STDOUT_FILENO, new_line, 1);
+		pwd = getcwd(NULL, 0);
+		if (pwd == NULL)
+		{
+			perror("getcwd");
+			ret = -1;
+		}
+
+		dir_info = malloc(sizeof(char *) * 2);
+		if (dir_info == NULL)
+		{
+			perror("malloc");
+			ret = -1;
+		}
+		else
+		{
+			dir_info[0] = "OLDPWD";
+			dir_info[1] = oldpwd;
+			if (e_j_setenv(dir_info, front) == -1)
+				ret = -1;
+
+			dir_info[0] = "PWD";
+			dir_info[1] = pwd;
+			if (e_j_setenv(dir_info, front) == -1)
+				ret = -1;
+
+			free(dir_info);
+		}
 	}
+
 	free(oldpwd);
 	free(pwd);
-	free(dir_info);
-	return (0);
+
+	return ret;
 }
 
 /**
- * e_j_help - Displays information about e_j builtin commands.
- * @args: An array of arguments.
- * @front: A pointer to the beginning of args.
+ * help_all - Display help information for all shell built-in commands
+ */
+void help_all(void)
+{
+    printf("Help for all built-in commands\n");
+}
+
+/**
+ * help_alias - Display help information for the 'alias' built-in command
+ */
+void help_alias(void)
+{
+    printf("Help for 'alias' command\n");
+}
+
+/**
+ * help_cd - Display help information for the 'cd' built-in command
+ */
+void help_cd(void)
+{
+    printf("Help for 'cd' command\n");
+}
+
+/**
+ * help_exit - Display help information for the 'exit' built-in command
+ */
+void help_exit(void)
+{
+    printf("Help for 'exit' command\n");
+}
+
+/**
+ * help_help - Display help information for the 'help' built-in command
+ */
+void help_help(void)
+{
+    printf("Help for 'help' command\n");
+}
+
+
+/**
+ * e_j_help - Display help information about shell built-in commands
+ * @args: Represents user's arguments for command to help
+ * @front: Represents double pointer to @args beginning
  *
- * Return: If an error occurs - -1.
- *         Otherwise - 0.
+ * Return: Always 0
  */
 int e_j_help(char **args, char __attribute__((__unused__)) **front)
 {
