@@ -1,5 +1,10 @@
 #include "main.h"
-
+/**
+ * handle_line - Modifies the command line to handle logical operators
+ *
+ * @line: Represents pointer to a pointer to the original command line string
+ * @read: The number of characters read from the input
+ */
 void handle_line(char **line, ssize_t read)
 {
 	char *old_line, *new_line;
@@ -82,7 +87,13 @@ void handle_line(char **line, ssize_t read)
 	free(*line);
 	*line = new_line;
 }
-
+/**
+ * get_new_len - Calculates new command-line lenght post  handling logical operators
+ *
+ * @line: The command line string.
+ *
+ * Return: The new length of the command line.
+ */
 ssize_t get_new_len(char *line)
 {
 	size_t m_m;
@@ -132,9 +143,14 @@ ssize_t get_new_len(char *line)
 		}
 		new_len++;
 	}
-	return new_len;
+	return (new_len);
 }
-
+/**
+ * logical_ops - Handles logical operators and adjusts the new length accordingly.
+ *
+ * @line: Represents pointer to character in the command line string being analyzed.
+ * @new_len: Represents pointer to new commandlinelength update
+ */
 void logical_ops(char *line, ssize_t *new_len)
 {
 	char previous, current, next;
