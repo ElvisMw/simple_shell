@@ -1,16 +1,16 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <signal.h>
+#include <sys/types.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <sys/wait.h>
-#include <stdlib.h> 
+#include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
 #define END_OF_FILE -2
 #define EXIT -3
@@ -113,5 +113,7 @@ void help_setenv(void);
 void help_unsetenv(void);
 void help_history(void);
 
+
+extern alias_t *aliases;
 
 #endif /* MAIN_H */

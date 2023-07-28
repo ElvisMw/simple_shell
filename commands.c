@@ -100,7 +100,7 @@ int e_j_cd(char **args, char __attribute__((__unused__)) **front)
 	if (oldpwd == NULL)
 	{
 		perror("getcwd");
-		return (-1);
+		return -1;
 	}
 
 	if (args[0] != NULL)
@@ -108,7 +108,6 @@ int e_j_cd(char **args, char __attribute__((__unused__)) **front)
 		if (strcmp(args[0], "-") == 0)
 		{
 			char *prev_dir = getenv("OLDPWD");
-
 			if (prev_dir != NULL)
 			{
 				ret = chdir(prev_dir);
@@ -124,7 +123,6 @@ int e_j_cd(char **args, char __attribute__((__unused__)) **front)
 		else if (strcmp(args[0], "--") == 0)
 		{
 			char *home_dir = getenv("HOME");
-
 			if (home_dir != NULL)
 			{
 				ret = chdir(home_dir);
@@ -147,7 +145,6 @@ int e_j_cd(char **args, char __attribute__((__unused__)) **front)
 	else
 	{
 		char *home_dir = getenv("HOME");
-
 		if (home_dir != NULL)
 		{
 			ret = chdir(home_dir);
@@ -195,8 +192,50 @@ int e_j_cd(char **args, char __attribute__((__unused__)) **front)
 	free(oldpwd);
 	free(pwd);
 
-	return (ret);
+	return ret;
 }
+
+/**
+ * help_all - Display help information for all shell built-in commands
+ */
+void help_all(void)
+{
+    printf("Help for all built-in commands\n");
+}
+
+/**
+ * help_alias - Display help information for the 'alias' built-in command
+ */
+void help_alias(void)
+{
+    printf("Help for 'alias' command\n");
+}
+
+/**
+ * help_cd - Display help information for the 'cd' built-in command
+ */
+void help_cd(void)
+{
+    printf("Help for 'cd' command\n");
+}
+
+/**
+ * help_exit - Display help information for the 'exit' built-in command
+ */
+void help_exit(void)
+{
+    printf("Help for 'exit' command\n");
+}
+
+/**
+ * help_help - Display help information for the 'help' built-in command
+ */
+void help_help(void)
+{
+    printf("Help for 'help' command\n");
+}
+
+
 /**
  * e_j_help - Display help information about shell built-in commands
  * @args: Represents user's arguments for command to help
