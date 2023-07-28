@@ -9,6 +9,29 @@
  * Return: When unsuccessful, return -1.
  * Return 0 upon success.
  */
+int e_j_alias(char **args, char __attribute__((__unused__)) **front);
+
+/**
+ * set_alias - Sets a new alias or updates an existing alias.
+ * @var_name: The name of the alias to set.
+ * @value: The value to assign to the alias.
+ */
+void set_alias(char *var_name, char *value);
+
+/**
+ * print_alias - Prints the name and value of an alias.
+ * @alias: Pointer to the alias structure to print.
+ */
+void print_alias(alias_t *alias);
+
+/**
+ * replace_aliases - Replaces arguments that are aliases with their values.
+ * @args: An array of arguments to check for aliases.
+ *
+ * Return: The updated array of arguments with aliases replaced by their values.
+ */
+char **replace_aliases(char **args);
+
 int e_j_alias(char **args, char __attribute__((__unused__)) **front)
 {
 	alias_t *temp = aliases;
@@ -22,7 +45,7 @@ int e_j_alias(char **args, char __attribute__((__unused__)) **front)
 			print_alias(temp);
 			temp = temp->next;
 		}
-		return (ret);
+		return ret;
 	}
 	for (m_m = 0; args[m_m]; m_m++)
 	{
@@ -45,13 +68,9 @@ int e_j_alias(char **args, char __attribute__((__unused__)) **front)
 		else
 			set_alias(args[m_m], value);
 	}
-	return (ret);
+	return ret;
 }
-/**
- * set_alias - Sets a new alias or updates an existing alias.
- * @var_name: The name of the alias to set.
- * @value: The value to assign to the alias.
- */
+
 void set_alias(char *var_name, char *value)
 {
 	alias_t *temp = aliases;
@@ -84,10 +103,6 @@ void set_alias(char *var_name, char *value)
 		add_alias_end(&aliases, var_name, new_value);
 }
 
-/**
- * print_alias - Prints the name and value of an alias.
- * @alias: Pointer to the alias structure to print.
- */
 void print_alias(alias_t *alias)
 {
 	char *alias_string;
@@ -105,12 +120,6 @@ void print_alias(alias_t *alias)
 	free(alias_string);
 }
 
-/**
- * replace_aliases - Replaces arguments that are aliases with their values.
- * @args: An array of arguments to check for aliases.
- *
- * Return: The updated array of arguments with aliases replaced by their values
- */
 char **replace_aliases(char **args)
 {
 	alias_t *temp;
@@ -118,7 +127,7 @@ char **replace_aliases(char **args)
 	char *new_value;
 
 	if (_strcmp(args[0], "e_j") == 0)
-		return (args);
+		return args;
 	for (m_m = 0; args[m_m]; m_m++)
 	{
 		temp = aliases;
@@ -130,7 +139,7 @@ char **replace_aliases(char **args)
 				if (!new_value)
 				{
 					free_args(args, args);
-					return (NULL);
+					return NULL;
 				}
 				_strcpy(new_value, temp->value);
 				free(args[m_m]);
