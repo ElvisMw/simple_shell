@@ -94,7 +94,7 @@ void set_alias(char *var_name, char *value)
 	len = _strlen(value) - _strspn(value, "'\"");
 	new_value = malloc(sizeof(char) * (len + 1));
 	if (!new_value)
-		return ();
+		return;
 	for (z = 0, k = 0; value[z]; z++)
 	{
 		if (value[z] != '\'' && value[z] != '"')
@@ -125,7 +125,7 @@ void print_alias(alias_t *alias)
 
 	alias_string = malloc(sizeof(char) * (len + 1));
 	if (!alias_string)
-		return ();
+		return;
 	_strcpy(alias_string, alias->name);
 	_strcat(alias_string, "='");
 	_strcat(alias_string, alias->value);
